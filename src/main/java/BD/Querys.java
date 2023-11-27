@@ -1,13 +1,14 @@
 package BD;
 
 import Modelo.Producto;
+import Controlador.ExceptionBuscar;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.List;
+
 
 public class Querys {
     private Connection connection;
@@ -18,7 +19,7 @@ public class Querys {
     }
 
     public boolean registrar(Producto producto) {
-        String sql = "INSERT INTO producto (codigo, nombre, precio) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO PRODUCTO (CODIGO, NOMBRE, PRECIO) VALUES (?, ?, ?)";
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, producto.getCodigo());
             statement.setString(2, producto.getNombre());
@@ -31,7 +32,7 @@ public class Querys {
     }
 
     public boolean modificar(Producto producto) {
-        String sql = "UPDATE producto SET codigo = ?, nombre = ?, precio = ? WHERE Id = ?";
+        String sql = "UPDATE PRODUCTO SET CODIGO = ?, NOMBRE = ?, PRECIO = ? WHERE Id = ?";
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, producto.getCodigo());
             statement.setString(2, producto.getNombre());
@@ -45,7 +46,7 @@ public class Querys {
     }
 
     public boolean eliminar(int id) {
-        String sql = "DELETE FROM producto WHERE id = ?";
+        String sql = "DELETE FROM PRODUCTO WHERE ID = ?";
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, id);
             return statement.executeUpdate() > 0;
@@ -55,8 +56,8 @@ public class Querys {
         }
     }
 
-    public Producto buscar(int id) {
-        String sql = "SELECT * FROM producto WHERE id = ?";
+    public Producto buscar(int id) throws ExceptionBuscar {
+        String sql = "SELECT * FROM PRODUCTO WHERE ID = ?";
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, id);
             ResultSet resultSet = statement.executeQuery();
@@ -66,19 +67,21 @@ public class Querys {
                 producto.setCodigo(resultSet.getString("Codigo"));
                 producto.setNombre(resultSet.getString("Nombre"));
                 producto.setPrecio(resultSet.getInt("Precio"));
-                return producto;
+                return producto;  
+            } else {
+                throw new ExceptionBuscar("No hay coincidencias");
             }
         } catch (SQLException e) {
             e.printStackTrace();
+            throw new ExceptionBuscar("Error");
         }
-        return null;
     }
 
     public ArrayList<Producto> obtenerListaProductosOrdenada() {
         ArrayList<Producto> listaProductos = new ArrayList<>();
 
         try (Connection con = Conexion.getConexion();
-             PreparedStatement ps = con.prepareStatement("SELECT * FROM producto");
+             PreparedStatement ps = con.prepareStatement("SELECT * FROM PRODUCTO");
              ResultSet rs = ps.executeQuery()) {
 
             while (rs.next()) {

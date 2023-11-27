@@ -20,14 +20,9 @@
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
             <version>2.1.210</version> <!-- Verifica la última versión en el repositorio Maven central -->
+            <scope>runtime</scope>
         </dependency>
 
-        <!-- Dependencia para Java Swing (ya incluida en la mayoría de las distribuciones de Java) -->
-        <dependency>
-            <groupId>javax.swing</groupId>
-            <artifactId>javax.swing-api</artifactId>
-            <version>20.0.1</version> <!-- O utiliza la versión de Java que estés utilizando -->
-        </dependency>
     </dependencies>
 
 </project>

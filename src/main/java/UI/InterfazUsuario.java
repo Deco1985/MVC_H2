@@ -10,15 +10,15 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class InterfazUsuario extends JFrame {
-    private ControladorProducto controladorProducto;
+
 
     private DefaultTableModel tableModel;
     private JTable table;
 
     private JTextField txtId, txtNombre, txtCodigo, txtPrecio;
 
+    private ControladorProducto controladorProducto;
     public InterfazUsuario() {
-        controladorProducto = new ControladorProducto();
 
         setTitle("Gestión de Productos");
         setSize(600, 400);
@@ -71,22 +71,38 @@ public class InterfazUsuario extends JFrame {
         btnAgregar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                agregarProducto();
+                Producto producto = controladorProducto.obtenerProductoDesdeFormulario(
+                        txtId.getText(), txtNombre.getText(), txtCodigo.getText(), txtPrecio.getText()
+                );
+                controladorProducto.agregarProducto(producto);
+                controladorProducto.updateTableModel(tableModel);
+                controladorProducto.limpiarFormulario(txtId, txtNombre, txtCodigo, txtPrecio);
             }
         });
 
         btnModificar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                modificarProducto();
+                Producto producto = controladorProducto.obtenerProductoDesdeFormulario(
+                        txtId.getText(), txtNombre.getText(), txtCodigo.getText(), txtPrecio.getText()
+                );
+                controladorProducto.modificarProducto(producto);
+                controladorProducto.updateTableModel(tableModel);
+                controladorProducto.limpiarFormulario(txtId, txtNombre, txtCodigo, txtPrecio);
             }
         });
 
         btnEliminar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                eliminarProducto();
+                controladorProducto.eliminarProducto(Integer.parseInt(txtId.getText()));
+                controladorProducto.updateTableModel(tableModel);
+                controladorProducto.limpiarFormulario(txtId, txtNombre, txtCodigo, txtPrecio);
             }
+
+        //Agregar nuevo actionListener para buscar 
+            
+
         });
 
         // Diseño de la interfaz
@@ -120,60 +136,6 @@ public class InterfazUsuario extends JFrame {
     }
 
     private void updateTable() {
-        tableModel.setRowCount(0);
-        for (Producto producto : controladorProducto.obtenerProductos()) {
-            Object[] row = {producto.getId(), producto.getNombre(), producto.getCodigo(), producto.getPrecio()};
-            tableModel.addRow(row);
-        }
+        controladorProducto.updateTableModel(tableModel);
     }
-
-    private void agregarProducto() {
-        int id = Integer.parseInt(txtId.getText());
-        String nombre = txtNombre.getText();
-        String codigo = txtCodigo.getText();
-        int precio = Integer.parseInt(txtPrecio.getText());
-
-        Producto nuevoProducto = new Producto();
-        nuevoProducto.setId(id);
-        nuevoProducto.setNombre(nombre);
-        nuevoProducto.setCodigo(codigo);
-        nuevoProducto.setPrecio(precio);
-
-        controladorProducto.agregarProducto(nuevoProducto);
-        updateTable();
-        limpiarFormulario();
-    }
-
-    private void modificarProducto() {
-        int id = Integer.parseInt(txtId.getText());
-        String nombre = txtNombre.getText();
-        String codigo = txtCodigo.getText();
-        int precio = Integer.parseInt(txtPrecio.getText());
-
-        Producto productoModificado = new Producto();
-        productoModificado.setId(id);
-        productoModificado.setNombre(nombre);
-        productoModificado.setCodigo(codigo);
-        productoModificado.setPrecio(precio);
-
-        controladorProducto.modificarProducto(productoModificado);
-        updateTable();
-        limpiarFormulario();
-    }
-
-    private void eliminarProducto() {
-        int id = Integer.parseInt(txtId.getText());
-        controladorProducto.eliminarProducto(id);
-        updateTable();
-        limpiarFormulario();
-    }
-
-    private void limpiarFormulario() {
-        txtId.setText("");
-        txtNombre.setText("");
-        txtCodigo.setText("");
-        txtPrecio.setText("");
-    }
-
 }
-

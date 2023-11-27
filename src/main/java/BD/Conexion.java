@@ -12,7 +12,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
-
 public class Conexion {
     private static Connection con = null;  // 'con' estático para obtenerListaProductosOrdenada()
 
